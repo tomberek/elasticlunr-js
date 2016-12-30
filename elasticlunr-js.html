@@ -1,5 +1,5 @@
-<link rel="import" href="../polymer/polymer.html">
-<script rel="import" src="../lunr.js/lunr.min.js"></script>
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<script rel="import" src="../bower_components/elasticlunr.js/elasticlunr.min.js"></script>
 <script>
 /**
  *  To use 
@@ -14,10 +14,10 @@
  * @demo
  */
 Polymer({
-  is: 'lunr-js',
+  is: 'elasticlunr-js',
   properties: {
     /** The data that you'd like to be searched. */
-    data: {type: Array, value: []},
+    data: {type: Array},
     /** The search term that filters results. */
     search: String,
     debounceing: {
@@ -33,17 +33,19 @@ Polymer({
     /** The fields to be searched. */
     fields: {type: Array, value: []},
     /** Set fields to be searched. */
-    _index: {computed: '_setFields(data, fields)'},
+    _index: {computed: '_setFields(data, fields, saveDoc)'},
     /** The maximum number of results you'd like your output. */
     limit: {type: Number, value: 500},
     /** The minimum score of your results. from 0 to 1 */
     minScore: {type: Number, value: 0},
     /** Whether you would like console.log output. */
-    log: Boolean
+    log: Boolean,
+    /** Whether you would like to save the documents */
+    saveDoc: {type: Boolean, value: false}
   },
   
   debounceInput: function(data){
-    this.debounce("setInput", this.setInput, 1200)
+    this.debounce("setInput", this.setInput, 200)
   },
   setInput: function(){
     this._search = this.search
@@ -81,17 +83,18 @@ Polymer({
     }
     return output
   }},
-  _setFields: function(data, fields) {
+  _setFields: function(data, fields, saveDoc) {
     var thatLunrJs = this
-    if (Array.isArray(data) && data.length > 0) {
+    if (Array.isArray(data) && data.length >= 0) {
       if (Array.isArray(fields) && fields.length > 0) {
         this._fields = fields
-        return lunr(function () {
+        return elasticlunr(function () {
+          this.saveDocument(saveDoc);
           for (var i = 0; i < fields.length; i++) {
             if (fields[i].charAt(0) === fields[i].charAt(0).toUpperCase()) {
-              this.field(fields[i], { boost: 10 })
+              this.addField(fields[i], { boost: 10 })
             } else {
-              this.field(fields[i])
+              this.addField(fields[i])
             }
           }
         })
@@ -101,16 +104,17 @@ Polymer({
         // TODO only word best fields.
         var fields = []
         var ddup = {}
-        return lunr(function () {
+        return elasticlunr(function () {
+          this.saveDocument(saveDoc);
           for (var indexOfData = 0; indexOfData < data.length; indexOfData++) {
             for (var prop in data[indexOfData]) {
               if (prop.charAt(0) !== "_" && !ddup.hasOwnProperty(prop) && 
                  (prop.toString().split(' ').length > 2 || prop.toString().length < 30)) {
                 fields.push(prop)
                 if (prop.charAt(0) === prop.charAt(0).toUpperCase()) {
-                  this.field(prop, { boost: 10 })
+                  this.addField(prop, { boost: 10 })
                 } else {
-                  this.field(prop)
+                  this.addField(prop)
                 }
                 ddup[prop] = 1
               }
@@ -151,7 +155,7 @@ Polymer({
             toIndex[fields[f]] = ""
           }
         }
-        index.add(toIndex)
+        index.addDoc(toIndex)
       }
       if (this.log) {
         var time = performance.now() - start
@@ -160,7 +164,7 @@ Polymer({
         console.log('Network size index', size)
       }
       if (noStopWords) {
-        index.pipeline.remove(lunr.stopWordFilter)
+        index.pipeline.remove(elasticlunr.stopWordFilter)
       }
       return index
     }

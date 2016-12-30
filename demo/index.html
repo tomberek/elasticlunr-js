@@ -4,10 +4,10 @@
 <head>
   <meta charset="utf-8">
 
-  <title>lunr-js demo</title>
+  <title>elasticlunr-js demo</title>
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../lunr-js.html">
+  <link rel="import" href="../elasticlunr-js.html">
   <link rel="import" href="../../iron-ajax/iron-ajax.html">
  
 </head>
@@ -22,11 +22,11 @@
     <a href="https://api.github.com/repos/marcus7777/open-elements.org/issues">see the <span>{{data.length}}</span> open issues in the json</a>
     <p>Type in <input value="{{search::input}}" /> and see it search all the data</p>
 
-    <lunr-js
+    <elasticlunr-js
       data="{{data}}"
       search="{{search}}"
       output="{{output}}" >
-    </lunr-js>
+    </elasticlunr-js>
     
     <p>output:</p>
     <template is="dom-repeat" items="{{output}}">

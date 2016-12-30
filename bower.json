@@ -1,20 +1,20 @@
 {
-  "name": "lunr-js",
+  "name": "elasticlunr-js",
   "version": "0.0.3",
-  "homepage": "https://github.com/marcus7777/lunr-js",
+  "homepage": "https://github.com/tomberek/elasticlunr-js",
   "authors": [
-    "Marcus Hitchins <marcus7777@gmail.com>"
+    "Tom Bereknyei <tomberek@gmail.com>"
   ],
-  "description": "polymer rapper for \n# lunr.js \n## [Simple full-text search in your browser](https://github.com/olivernn/lunr.js)",
+  "description": "polymer rapper for \n# elasticlunr.js \n## [Simple full-text search in your browser](https://github.com/weixsong/lunr.js), adopted from lunr-js component",
   "keywords": [
     "search",
     "web-components",
     "Polymer"
   ],
-  "main": "lunr-js.html",
+  "main": "elasticlunr-js.html",
   "license": "MIT",
   "dependencies": {
-    "lunr.js": "olivernn/lunr.js#~0.5.11"
+    "elasticlunr.js": "weixsong/elasticlunr.js#~0.9.5"
   },
   "devDependencies": {
     "paper-styles": "PolymerElements/paper-styles#^1.0.4",
